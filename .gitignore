@@ -1,0 +1,7 @@
+.gradle
+.idea
+build
+eclipse
+out
+run
+Forge-Mods.*

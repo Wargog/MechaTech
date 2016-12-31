@@ -1,0 +1,16 @@
+[
+  {
+    "modid": "mechatech",
+    "name": "Mecha Tech",
+    "description": "A primitive tech mod that uses mechanics to generate and transport power.",
+    "version": "${version}",
+    "mcversion": "${mcversion}",
+    "url": "https://joshstroup.xyz/minecraft/mechatech",
+    "updateUrl": "",
+    "authorList": ["Joshua Stroup (Wargog)"],
+    "credits": "Zundrel, for his ideas and teaching me to not be crap at modding.",
+    "logoFile": "assets/mechatech/logo.png",
+    "screenshots": [],
+    "dependencies": []
+  }
+]
