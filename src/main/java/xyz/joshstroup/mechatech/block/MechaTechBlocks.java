@@ -1,24 +1,29 @@
 package xyz.joshstroup.mechatech.block;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
+import net.minecraft.item.ItemBlock;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import xyz.joshstroup.mechatech.info.BlockInfo;
 
 public class MechaTechBlocks
 {
-    public static void register()
-    {
+    public static Block blockCombustionGenerator;
 
+    public static void init()
+    {
+        blockCombustionGenerator = new BlockCombustionGenerator(Material.IRON, BlockInfo.BLOCK_COMBUSTIONGENERATOR_UNLOCALIZED_NAME);
+
+        register(blockCombustionGenerator);
     }
 
-    public static ArrayList<HashMap> getNeighbors(Block block)
+    private static void register(Block block)
     {
-        return new ArrayList<HashMap>();
-    }
+        GameRegistry.register(block);
 
-    public static ArrayList<HashMap> getNeighbors(Block block, int radius)
-    {
-        return new ArrayList<HashMap>();
+        ItemBlock itemBlock = new ItemBlock(block);
+        itemBlock.setRegistryName(block.getRegistryName());
+        GameRegistry.register(itemBlock);
     }
 }

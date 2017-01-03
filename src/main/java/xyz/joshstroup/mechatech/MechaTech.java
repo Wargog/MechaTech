@@ -4,31 +4,35 @@ import net.minecraft.init.Blocks;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.Instance;
 import net.minecraftforge.fml.common.Mod.EventHandler;
+import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
 import xyz.joshstroup.mechatech.handler.ConfigHandler;
 import xyz.joshstroup.mechatech.handler.RecipeHandler;
+import xyz.joshstroup.mechatech.info.ModInfo;
 import xyz.joshstroup.mechatech.item.MechaTechItems;
 import xyz.joshstroup.mechatech.block.MechaTechBlocks;
+import xyz.joshstroup.mechatech.proxy.CommonProxy;
 
-@Mod(modid = MechaTech.MODID, name = MechaTech.NAME, version = MechaTech.VERSION)
+@Mod(modid = ModInfo.MODID, name = ModInfo.NAME, version = ModInfo.VERSION)
 public class MechaTech
 {
-    public static final String MODID = "mechatech";
-    public static final String NAME = "Mecha Tech";
-    public static final String VERSION = "0.1";
+    @SidedProxy(clientSide = "xyz.joshstroup.mechatech.proxy.ClientProxy", serverSide = "xyz.joshstroup.mechatech.proxy.CommonProxy")
+    public static CommonProxy proxy;
 
-    @Instance(value = MODID)
-    public static MechaTech INTSANCE;
+    @Instance(value = ModInfo.MODID)
+    public static MechaTech INSTANCE;
 
     @EventHandler
     public void preInit(FMLPreInitializationEvent event)
     {
         ConfigHandler.init(event.getSuggestedConfigurationFile());
 
-        MechaTechItems.register();
-        MechaTechBlocks.register();
+        System.out.println(ModInfo.NAME + " v" + ModInfo.VERSION + " is loading with ID " + ModInfo.MODID);
+
+        MechaTechItems.init();
+        MechaTechBlocks.init();
 
         RecipeHandler.init();
     }
@@ -36,8 +40,6 @@ public class MechaTech
     @EventHandler
     public void init(FMLInitializationEvent event)
     {
-        // Do sync clock event handler stuff
-
-        System.out.println("DIRT BLOCK >> "+Blocks.DIRT.getUnlocalizedName());
+        // GuiHandlers, TileEntities, EventHandlers, Block Models, Packets
     }
 }
