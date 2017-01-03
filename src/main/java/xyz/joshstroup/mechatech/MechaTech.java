@@ -6,8 +6,11 @@ import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.network.IGuiHandler;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
 
 import xyz.joshstroup.mechatech.handler.ConfigHandler;
+import xyz.joshstroup.mechatech.handler.GuiHandler;
 import xyz.joshstroup.mechatech.handler.RecipeHandler;
 import xyz.joshstroup.mechatech.info.ModInfo;
 import xyz.joshstroup.mechatech.item.MechaTechItems;
@@ -34,12 +37,16 @@ public class MechaTech
         MechaTechBlocks.init();
 
         RecipeHandler.init();
+
+        GuiHandler.initGuiScreens();
     }
     
     @EventHandler
     public void init(FMLInitializationEvent event)
     {
         // GuiHandlers, TileEntities, EventHandlers, Block Models, Packets
+        NetworkRegistry.INSTANCE.registerGuiHandler(MechaTech.INSTANCE, new GuiHandler());
+
         MechaTechItems.initRenderers();
         MechaTechBlocks.initRenderers();
     }
