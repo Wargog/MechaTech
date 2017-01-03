@@ -1,6 +1,5 @@
 package xyz.joshstroup.mechatech;
 
-import net.minecraft.init.Blocks;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.Instance;
 import net.minecraftforge.fml.common.Mod.EventHandler;
@@ -41,5 +40,7 @@ public class MechaTech
     public void init(FMLInitializationEvent event)
     {
         // GuiHandlers, TileEntities, EventHandlers, Block Models, Packets
+        MechaTechItems.initRenderers();
+        MechaTechBlocks.initRenderers();
     }
 }

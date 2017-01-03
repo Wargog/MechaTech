@@ -4,4 +4,4 @@ MechaTech is a mod that focuses around generating, storing, and transporting pow
 
 Copyright &copy; 2017 Joshua Stroup
 
-[![https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png](License Image)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
+[![License Image](https://licensebuttons.net/l/by-nc-sa/4.0/88x31.png)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
