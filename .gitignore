@@ -4,4 +4,4 @@ build
 eclipse
 out
 run
-Forge-Mods.*
+Forge-*.*
