@@ -31,20 +31,19 @@ public class MechaTechContainer<T extends TileEntity> extends Container
 
     public void addPlayerSlots(InventoryPlayer playerInventory)
     {
-        // Add hotbar slots
-        for (int i = 0; i < 9; i++)
+    	// Add inventory slots
+    	for (int i = 0; i < 3; ++i)
         {
-            this.playerInventorySlots.add(new Slot(playerInventory, i, 8 + i * 18, 142));
-            addSlotToContainer(this.playerInventorySlots.get(i));
-        }
-        // Add inventory slots
-        for (int i = 0; i < 3; i++)
-        {
-            for (int j = 0; j < 9; j++)
+            for (int j = 0; j < 9; ++j)
             {
-                this.playerInventorySlots.add(new Slot(playerInventory, j + i * 9 + 9, 8 + j * 18, 84 + i * 18));
-                addSlotToContainer(this.playerInventorySlots.get(j + i * 9));
+                this.addSlotToContainer(new Slot(playerInventory, j + i * 9 + 9, 8 + j * 18, 84 + i * 18));
             }
+        }
+    	
+    	// Add hotbar slots
+    	for (int k = 0; k < 9; ++k)
+        {
+            this.addSlotToContainer(new Slot(playerInventory, k, 8 + k * 18, 142));
         }
     }
 
@@ -58,7 +57,6 @@ public class MechaTechContainer<T extends TileEntity> extends Container
     @Override
     public ItemStack slotClick(int id, int button, ClickType clickType, EntityPlayer player)
     {
-        // TODO: Actually add and remove stuff from player's inventory
         return super.slotClick(id, button, clickType, player);
     }
 

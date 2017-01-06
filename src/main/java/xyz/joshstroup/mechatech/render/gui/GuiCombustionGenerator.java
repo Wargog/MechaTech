@@ -6,7 +6,7 @@ import org.lwjgl.opengl.GL11;
 
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.client.gui.inventory.GuiContainer;
-
+import xyz.joshstroup.mechatech.info.ModInfo;
 import xyz.joshstroup.mechatech.render.gui.container.ContainerCombustionGenerator;
 
 public class GuiCombustionGenerator extends GuiContainer
@@ -14,7 +14,7 @@ public class GuiCombustionGenerator extends GuiContainer
     public static final int WIDTH = 175;
     public static final int HEIGHT = 165;
 
-    private static final ResourceLocation background = new ResourceLocation("textures/gui/container/furnace.png");
+    private static final ResourceLocation background = new ResourceLocation(ModInfo.MODID + ":" + "textures/gui/container/combustion_generator.png");
 
     public GuiCombustionGenerator(ContainerCombustionGenerator container)
     {
