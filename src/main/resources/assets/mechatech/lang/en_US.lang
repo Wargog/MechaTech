@@ -1,5 +1,6 @@
 itemGroup.mechatech=Mecha Tech
 
 item.pliers.name=Pliers
+item.ash.name=Ash
 
 tile.combustion_generator.name=Combustion Generator

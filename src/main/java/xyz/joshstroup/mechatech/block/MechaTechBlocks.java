@@ -15,21 +15,21 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import xyz.joshstroup.mechatech.info.BlockInfo;
 import xyz.joshstroup.mechatech.info.ModInfo;
 
-
 public class MechaTechBlocks
 {
     private static ArrayList<Block> blockList = new ArrayList<Block>();
-
-    public static Block blockCombustionGenerator;
 
     public static ArrayList<Block> getBlockList()
     {
         return blockList;
     }
 
+
+    public static Block blockCombustionGenerator;
+
     public static void init()
     {
-        blockCombustionGenerator = new BlockCombustionGenerator(Material.IRON, BlockInfo.BLOCK_COMBUSTIONGENERATOR_UNLOCALIZED_NAME);
+        blockCombustionGenerator = new BlockCombustionGenerator(Material.IRON, BlockInfo.BLOCK_COMBUSTION_GENERATOR_UNLOCALIZED_NAME);
 
         register(blockCombustionGenerator);
     }
