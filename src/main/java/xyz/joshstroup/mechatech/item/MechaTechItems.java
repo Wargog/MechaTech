@@ -12,12 +12,12 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import xyz.joshstroup.mechatech.info.ItemInfo;
 import xyz.joshstroup.mechatech.info.ModInfo;
 
-
 public class MechaTechItems
 {
     private static ArrayList<Item> itemList = new ArrayList<Item>();
 
     public static Item itemPliers;
+    public static Item itemAsh;
 
     public static ArrayList<Item> getItemList()
     {
@@ -27,8 +27,10 @@ public class MechaTechItems
     public static void init()
     {
         itemPliers = new ItemPliers(ItemInfo.ITEM_PLIERS_UNLOCALIZED_NAME);
+        itemAsh = new ItemAsh(ItemInfo.ITEM_ASH_UNLOCALIZED_NAME);
 
         register(itemPliers);
+        register(itemAsh);
     }
 
     public static void initRenderers()

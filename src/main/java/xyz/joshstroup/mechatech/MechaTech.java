@@ -6,7 +6,6 @@ import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.network.IGuiHandler;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 
 import xyz.joshstroup.mechatech.handler.ConfigHandler;
@@ -16,6 +15,7 @@ import xyz.joshstroup.mechatech.info.ModInfo;
 import xyz.joshstroup.mechatech.item.MechaTechItems;
 import xyz.joshstroup.mechatech.block.MechaTechBlocks;
 import xyz.joshstroup.mechatech.proxy.CommonProxy;
+import xyz.joshstroup.mechatech.tileentity.MechaTechTileEntities;
 
 @Mod(modid = ModInfo.MODID, name = ModInfo.NAME, version = ModInfo.VERSION)
 public class MechaTech
@@ -31,23 +31,29 @@ public class MechaTech
     {
         ConfigHandler.init(event.getSuggestedConfigurationFile());
 
-        System.out.println(ModInfo.NAME + " v" + ModInfo.VERSION + " is loading with ID " + ModInfo.MODID);
+        System.out.println(ModInfo.NAME + " v" + ModInfo.VERSION + " is in preInit with ID " + ModInfo.MODID);
 
         MechaTechItems.init();
         MechaTechBlocks.init();
 
         RecipeHandler.init();
 
-        GuiHandler.initGuiScreens();
+        MechaTechTileEntities.initTileEntities();
     }
     
     @EventHandler
     public void init(FMLInitializationEvent event)
     {
+        System.out.println("In initialization, loading event handlers, renderers, and GUIs...");
+
         // GuiHandlers, TileEntities, EventHandlers, Block Models, Packets
         NetworkRegistry.INSTANCE.registerGuiHandler(MechaTech.INSTANCE, new GuiHandler());
 
+        MechaTechTileEntities.registerTileEntities();
+
         MechaTechItems.initRenderers();
         MechaTechBlocks.initRenderers();
+
+        System.out.println("Finished initialization event, mod is ready to go!");
     }
 }

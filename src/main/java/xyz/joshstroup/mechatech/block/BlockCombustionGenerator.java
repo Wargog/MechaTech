@@ -1,10 +1,15 @@
 package xyz.joshstroup.mechatech.block;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
+import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.block.Block;
+import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
@@ -12,8 +17,9 @@ import net.minecraft.world.World;
 
 import xyz.joshstroup.mechatech.MechaTech;
 import xyz.joshstroup.mechatech.MechaTechCreativeTab;
+import xyz.joshstroup.mechatech.tileentity.TileEntityCombustionGenerator;
 
-public class BlockCombustionGenerator extends Block
+public class BlockCombustionGenerator extends Block implements ITileEntityProvider
 {
     public BlockCombustionGenerator(Material material, String unlocalizedName)
     {
@@ -34,5 +40,13 @@ public class BlockCombustionGenerator extends Block
             return true;
         }
         return false;
+    }
+
+    @Override
+    @MethodsReturnNonnullByDefault
+    @ParametersAreNonnullByDefault
+    public TileEntity createNewTileEntity(World world, int meta)
+    {
+        return new TileEntityCombustionGenerator();
     }
 }
