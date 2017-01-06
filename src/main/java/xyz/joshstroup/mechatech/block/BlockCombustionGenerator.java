@@ -34,7 +34,7 @@ public class BlockCombustionGenerator extends Block implements ITileEntityProvid
                                     EntityPlayer player, EnumHand hand, ItemStack heldItem, EnumFacing side,
                                     float hitX, float hitY, float hitZ)
     {
-        if(world.isRemote)
+        if(!world.isRemote)
         {
             player.openGui(MechaTech.INSTANCE, 0, world, blockPos.getX(), blockPos.getY(), blockPos.getZ());
             return true;

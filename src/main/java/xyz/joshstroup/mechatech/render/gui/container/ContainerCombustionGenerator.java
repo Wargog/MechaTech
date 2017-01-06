@@ -12,7 +12,7 @@ public class ContainerCombustionGenerator extends MechaTechContainer<TileEntityC
 {
     public ContainerCombustionGenerator(InventoryPlayer playerInventory, TileEntityCombustionGenerator tile)
     {
-        super(playerInventory, tile, 3);
+        super(playerInventory, tile, 2);
 
         this.addSlotToContainer(new Slot(this.inventory, 0, 56, 53));
 

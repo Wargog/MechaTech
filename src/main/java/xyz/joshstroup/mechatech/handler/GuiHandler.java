@@ -15,28 +15,24 @@ import xyz.joshstroup.mechatech.tileentity.TileEntityCombustionGenerator;
 public class GuiHandler implements IGuiHandler
 {
     public static HashMap guiScreens = new HashMap();
+    public static HashMap containers = new HashMap();
 
     private static void initGuiScreens(EntityPlayer player, World world, TileEntity tileEntity)
     {
         guiScreens.put(0, new GuiCombustionGenerator(new ContainerCombustionGenerator(player.inventory, (TileEntityCombustionGenerator) tileEntity)));
+
+        containers.put(0, new ContainerCombustionGenerator(player.inventory, (TileEntityCombustionGenerator) tileEntity));
     }
 
     @Override
     public Object getServerGuiElement(int ID, EntityPlayer player, World world,
                                       int x, int y, int z)
     {
-        try {
-            initGuiScreens(player, world, world.getTileEntity(new BlockPos(x, y, z)));
-        } catch (NullPointerException e) {
-            System.out.println("FAILED TO GET TILEENTITY FOR GUI. THIS IS MOST LIKELY THE FAULT OF THE MOD AUTHORS, PLEASE REPORT YOUR CRASH LOG. ABORTING...");
-            System.out.println(e.toString());
+        initGuiScreens(player, world, world.getTileEntity(new BlockPos(x, y, z)));
 
-            System.exit(1);
-        }
-
-        if(guiScreens.containsKey(ID))
+        if(containers.containsKey(ID))
         {
-            return guiScreens.get(ID);
+            return containers.get(ID);
         }
 
         return null;
@@ -46,14 +42,7 @@ public class GuiHandler implements IGuiHandler
     public Object getClientGuiElement(int ID, EntityPlayer player, World world,
                                       int x, int y, int z)
     {
-        try {
-            initGuiScreens(player, world, world.getTileEntity(new BlockPos(x, y, z)));
-        } catch (NullPointerException e) {
-            System.out.println("FAILED TO GET TILEENTITY FOR GUI. THIS IS MOST LIKELY THE FAULT OF THE MOD AUTHORS, PLEASE REPORT YOUR CRASH LOG. ABORTING...");
-            System.out.println(e.toString());
-
-            System.exit(1);
-        }
+        initGuiScreens(player, world, world.getTileEntity(new BlockPos(x, y, z)));
 
         if(guiScreens.containsKey(ID))
         {
