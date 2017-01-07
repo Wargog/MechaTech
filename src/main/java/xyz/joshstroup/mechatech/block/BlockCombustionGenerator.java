@@ -6,7 +6,11 @@ import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.IProperty;
+import net.minecraft.block.properties.PropertyDirection;
+import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -21,12 +25,54 @@ import xyz.joshstroup.mechatech.tileentity.TileEntityCombustionGenerator;
 
 public class BlockCombustionGenerator extends Block implements ITileEntityProvider
 {
+    public static final PropertyDirection FACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
+
     public BlockCombustionGenerator(Material material, String unlocalizedName)
     {
         super(material);
         setCreativeTab(MechaTechCreativeTab.INSTANCE);
         setRegistryName(unlocalizedName);
         setUnlocalizedName(this.getRegistryName().toString().replace("mechatech:", ""));
+    }
+
+    @Override
+    @MethodsReturnNonnullByDefault
+    @ParametersAreNonnullByDefault
+    public IBlockState getStateForPlacement(World world, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer, ItemStack itemStack)
+    {
+        if(placer.isSneaking())
+        {
+            return this.getDefaultState().withProperty(FACING, placer.getHorizontalFacing());
+        }
+        else
+        {
+            return this.getDefaultState().withProperty(FACING, placer.getHorizontalFacing().getOpposite());
+        }
+    }
+
+    @Override
+    public IBlockState getStateFromMeta(int meta)
+    {
+        return this.getDefaultState().withProperty(FACING, EnumFacing.getHorizontal(meta));
+    }
+
+    @Override
+    public int getMetaFromState(IBlockState state)
+    {
+        return state.getValue(FACING).getIndex();
+    }
+
+    @Override
+    @MethodsReturnNonnullByDefault
+    protected BlockStateContainer createBlockState()
+    {
+        return new BlockStateContainer(this, FACING);
+    }
+
+    @Override
+    public void onBlockPlacedBy(World worldIn, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack)
+    {
+
     }
 
     @Override
@@ -37,9 +83,9 @@ public class BlockCombustionGenerator extends Block implements ITileEntityProvid
         if(!world.isRemote)
         {
             player.openGui(MechaTech.INSTANCE, 0, world, blockPos.getX(), blockPos.getY(), blockPos.getZ());
-            return true;
         }
-        return false;
+
+        return true;
     }
 
     @Override

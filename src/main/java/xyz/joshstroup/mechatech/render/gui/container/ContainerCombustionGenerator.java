@@ -10,7 +10,7 @@ import net.minecraft.tileentity.TileEntityFurnace;
 import xyz.joshstroup.mechatech.tileentity.TileEntityCombustionGenerator;
 import xyz.joshstroup.mechatech.util.inventory.SlotOutput;
 
-public class ContainerCombustionGenerator extends MechaTechContainer<TileEntityCombustionGenerator>
+public class ContainerCombustionGenerator extends MechaTechContainers.TileEntityContainer<TileEntityCombustionGenerator>
 {
 	public static final int FUEL = 0, OUTPUT = 1;
 	
@@ -55,7 +55,7 @@ public class ContainerCombustionGenerator extends MechaTechContainer<TileEntityC
         	}
         	else if(index == FUEL)
         	{
-        		if (!this.mergeItemStack(itemstack1, FUEL + 1, FUEL + 36 +1, true))
+        		if(!this.mergeItemStack(itemstack1, FUEL + 1, FUEL + 36 +1, true))
     			{
     				return null;
     			}
