@@ -5,8 +5,7 @@
       "top": "mechatech:blocks/combustion_generator_top",
       "front": "blocks/furnace_front_off",
       "back": "mechatech:blocks/combustion_generator_back",
-      "side": "blocks/furnace_side",
-      "particle": "blocks/furnace_front_on"
+      "side": "blocks/furnace_side"
     },
     "model": "mechatech:combustion_generator"
   },

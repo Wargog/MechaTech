@@ -1,7 +1,5 @@
 package xyz.joshstroup.mechatech.tileentity;
 
-import java.util.Arrays;
-
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -22,7 +20,6 @@ import net.minecraft.util.ITickable;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import xyz.joshstroup.mechatech.render.gui.container.ContainerCombustionGenerator;
-import xyz.joshstroup.mechatech.util.inventory.InventoryTileEntity;
 
 public class TileEntityCombustionGenerator extends TileEntity implements IInventory, ITickable
 {
@@ -45,7 +42,8 @@ public class TileEntityCombustionGenerator extends TileEntity implements IInvent
 		NBTTagList dataForAllSlots = compound.getTagList("Items", NBT_TYPE_COMPOUND);
 
 		NBTTagList list = compound.getTagList("Items", 10);
-	    for (int i = 0; i < list.tagCount(); ++i) {
+	    for(int i = 0; i < list.tagCount(); ++i)
+	    {
 	        NBTTagCompound stackTag = list.getCompoundTagAt(i);
 	        int slot = stackTag.getByte("Slot") & 255;
 	        this.setInventorySlotContents(slot, ItemStack.loadItemStackFromNBT(stackTag));
@@ -64,14 +62,17 @@ public class TileEntityCombustionGenerator extends TileEntity implements IInvent
         compound.setInteger("BurnTime", this.burnTimeRemaining);
 
         NBTTagList list = new NBTTagList();
-        for (int i = 0; i < this.getSizeInventory(); ++i) {
-            if (this.getStackInSlot(i) != null) {
+        for(int i = 0; i < this.getSizeInventory(); ++i)
+        {
+            if(this.getStackInSlot(i) != null)
+            {
                 NBTTagCompound stackTag = new NBTTagCompound();
                 stackTag.setByte("Slot", (byte) i);
                 this.getStackInSlot(i).writeToNBT(stackTag);
                 list.appendTag(stackTag);
             }
         }
+
         compound.setTag("Items", list);
 
         return compound;
@@ -81,26 +82,28 @@ public class TileEntityCombustionGenerator extends TileEntity implements IInvent
     @Nullable
     public SPacketUpdateTileEntity getUpdatePacket()
     {
-      NBTTagCompound updateTagDescribingTileEntityState = getUpdateTag();
-      final int METADATA = 0;
-      return new SPacketUpdateTileEntity(this.pos, METADATA, updateTagDescribingTileEntityState);
+          NBTTagCompound updateTagDescribingTileEntityState = getUpdateTag();
+          final int METADATA = 0;
+          return new SPacketUpdateTileEntity(this.pos, METADATA, updateTagDescribingTileEntityState);
     }
 
     @Override
-    public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) {
-      NBTTagCompound updateTagDescribingTileEntityState = pkt.getNbtCompound();
-      handleUpdateTag(updateTagDescribingTileEntityState);
+    public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt)
+    {
+          NBTTagCompound updateTagDescribingTileEntityState = pkt.getNbtCompound();
+          handleUpdateTag(updateTagDescribingTileEntityState);
     }
 
-    /* Creates a tag containing the TileEntity information, used by vanilla to transmit from server to client
-       Warning - although our getUpdatePacket() uses this method, vanilla also calls it directly, so don't remove it.
+    /**
+     * Creates a tag containing the TileEntity information, used by vanilla to transmit from server to client
+     * Warning - although our getUpdatePacket() uses this method, vanilla also calls it directly, so don't remove it.
      */
     @Override
     public NBTTagCompound getUpdateTag()
     {
   		NBTTagCompound nbtTagCompound = new NBTTagCompound();
   		writeToNBT(nbtTagCompound);
-      return nbtTagCompound;
+        return nbtTagCompound;
     }
 
     /* Populates this TileEntity with information from the tag, used by vanilla to transmit from server to client
@@ -197,25 +200,33 @@ public class TileEntityCombustionGenerator extends TileEntity implements IInvent
     public ItemStack getStackInSlot(int index) {
         if (index < 0 || index >= this.getSizeInventory())
             return null;
+
         return this.generatorItemStacks[index];
     }
 
     @Override
     public ItemStack decrStackSize(int index, int count) {
-        if (this.getStackInSlot(index) != null) {
+        if(this.getStackInSlot(index) != null)
+        {
             ItemStack itemstack;
 
-            if (this.getStackInSlot(index).stackSize <= count) {
+            if(this.getStackInSlot(index).stackSize <= count)
+            {
                 itemstack = this.getStackInSlot(index);
                 this.setInventorySlotContents(index, null);
                 this.markDirty();
                 return itemstack;
-            } else {
+            }
+            else
+            {
                 itemstack = this.getStackInSlot(index).splitStack(count);
 
-                if (this.getStackInSlot(index).stackSize <= 0) {
+                if(this.getStackInSlot(index).stackSize <= 0)
+                {
                     this.setInventorySlotContents(index, null);
-                } else {
+                }
+                else
+                {
                     //Just to show that changes happened
                     this.setInventorySlotContents(index, this.getStackInSlot(index));
                 }
@@ -223,7 +234,9 @@ public class TileEntityCombustionGenerator extends TileEntity implements IInvent
                 this.markDirty();
                 return itemstack;
             }
-        } else {
+        }
+        else
+        {
             return null;
         }
     }
@@ -237,14 +250,20 @@ public class TileEntityCombustionGenerator extends TileEntity implements IInvent
 
     @Override
     public void setInventorySlotContents(int index, ItemStack stack) {
-        if (index < 0 || index >= this.getSizeInventory())
+        if(index < 0 || index >= this.getSizeInventory())
+        {
             return;
+        }
 
-        if (stack != null && stack.stackSize > this.getInventoryStackLimit())
+        if(stack != null && stack.stackSize > this.getInventoryStackLimit())
+        {
             stack.stackSize = this.getInventoryStackLimit();
-            
-        if (stack != null && stack.stackSize == 0)
+        }
+
+        if(stack != null && stack.stackSize == 0)
+        {
             stack = null;
+        }
 
         this.generatorItemStacks[index] = stack;
         this.markDirty();

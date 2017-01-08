@@ -12,14 +12,17 @@ import xyz.joshstroup.mechatech.render.gui.container.ContainerCombustionGenerato
 
 public class GuiCombustionGenerator extends GuiContainer
 {
+    private ContainerCombustionGenerator container;
+    private static final ResourceLocation background = new ResourceLocation("mechatech:textures/gui/container/combustion_generator.png");
+
     public static final int WIDTH = 175;
     public static final int HEIGHT = 165;
-
-    private static final ResourceLocation background = new ResourceLocation("mechatech:textures/gui/container/combustion_generator.png");
 
     public GuiCombustionGenerator(ContainerCombustionGenerator container)
     {
         super(container);
+
+        this.container = container;
     }
 
     @Override
