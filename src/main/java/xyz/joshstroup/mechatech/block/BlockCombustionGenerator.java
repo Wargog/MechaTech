@@ -11,13 +11,14 @@ import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-
 import xyz.joshstroup.mechatech.MechaTech;
 import xyz.joshstroup.mechatech.MechaTechCreativeTab;
 import xyz.joshstroup.mechatech.tileentity.TileEntityCombustionGenerator;
@@ -73,6 +74,12 @@ public class BlockCombustionGenerator extends Block implements ITileEntityProvid
         }
 
         return true;
+    }
+    
+    @Override
+    public void breakBlock(World worldIn, BlockPos pos, IBlockState state)
+    {
+    	InventoryHelper.dropInventoryItems(worldIn, pos, (IInventory) worldIn.getTileEntity(pos));
     }
 
     @Override
