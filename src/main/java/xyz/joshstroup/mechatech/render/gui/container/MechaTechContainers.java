@@ -27,7 +27,7 @@ public abstract class MechaTechContainers
         {
             this.tileEntity = tile;
             this.slotCount = slotCount;
-            this.inventory = new InventoryTileEntity(tile, slotCount);
+            this.inventory = (IInventory) tile;
         }
 
         public void addPlayerSlots(InventoryPlayer playerInventory)
@@ -58,6 +58,7 @@ public abstract class MechaTechContainers
         @Override
         public ItemStack slotClick(int id, int button, ClickType clickType, EntityPlayer player)
         {
+        	tileEntity.markDirty();
             return super.slotClick(id, button, clickType, player);
         }
     }

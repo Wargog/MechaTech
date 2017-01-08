@@ -38,11 +38,7 @@ public class GuiCombustionGenerator extends GuiContainer
     @Override
     public void drawScreen(int x, int y, float ticks)
     {
-        GL11.glEnable(GL11.GL_BLEND);
-        drawDefaultBackground();
-        GL11.glDisable(GL11.GL_BLEND);
-
-        super.drawScreen(x, y, ticks);
+    	super.drawScreen(x, y, ticks);
     }
 
     @Override

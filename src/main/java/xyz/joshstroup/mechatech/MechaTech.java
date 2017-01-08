@@ -39,6 +39,8 @@ public class MechaTech
         RecipeHandler.init();
 
         MechaTechTileEntities.initTileEntities();
+        
+        MechaTechTileEntities.registerTileEntities();
     }
     
     @EventHandler
@@ -48,8 +50,6 @@ public class MechaTech
 
         // GuiHandlers, TileEntities, EventHandlers, Block Models, Packets
         NetworkRegistry.INSTANCE.registerGuiHandler(MechaTech.INSTANCE, new GuiHandler());
-
-        MechaTechTileEntities.registerTileEntities();
 
         MechaTechItems.initRenderers();
         MechaTechBlocks.initRenderers();
