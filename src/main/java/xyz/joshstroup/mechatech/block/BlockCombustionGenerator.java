@@ -6,7 +6,6 @@ import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
@@ -40,17 +39,11 @@ public class BlockCombustionGenerator extends Block implements ITileEntityProvid
     @ParametersAreNonnullByDefault
     public IBlockState getStateForPlacement(World world, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer, ItemStack itemStack)
     {
-        if(placer.isSneaking())
-        {
-            return this.getDefaultState().withProperty(FACING, placer.getHorizontalFacing());
-        }
-        else
-        {
-            return this.getDefaultState().withProperty(FACING, placer.getHorizontalFacing().getOpposite());
-        }
+        return this.getDefaultState().withProperty(FACING, placer.getHorizontalFacing());
     }
 
     @Override
+    @MethodsReturnNonnullByDefault
     public IBlockState getStateFromMeta(int meta)
     {
         return this.getDefaultState().withProperty(FACING, EnumFacing.getHorizontal(meta));
@@ -67,12 +60,6 @@ public class BlockCombustionGenerator extends Block implements ITileEntityProvid
     protected BlockStateContainer createBlockState()
     {
         return new BlockStateContainer(this, FACING);
-    }
-
-    @Override
-    public void onBlockPlacedBy(World worldIn, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack)
-    {
-
     }
 
     @Override
