@@ -14,7 +14,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 
-public class InventoryTileEntity implements IInventory
+public class InventoryTileEntity extends TileEntity implements IInventory
 {
     private TileEntity tileEntity;
     private IInventory inventory;

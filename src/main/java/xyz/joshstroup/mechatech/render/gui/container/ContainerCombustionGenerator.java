@@ -2,7 +2,7 @@ package xyz.joshstroup.mechatech.render.gui.container;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.ClickType;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.inventory.SlotFurnaceFuel;
 import net.minecraft.item.ItemStack;
@@ -12,14 +12,21 @@ import xyz.joshstroup.mechatech.util.inventory.SlotOutput;
 
 public class ContainerCombustionGenerator extends MechaTechContainers.TileEntityContainer<TileEntityCombustionGenerator>
 {
-	public static final int FUEL = 0, OUTPUT = 1;
+	public static final int FUEL = 0;
+	public static final int OUTPUT = 1;
+
+	private TileEntityCombustionGenerator tileEntity;
 	
     public ContainerCombustionGenerator(InventoryPlayer playerInventory, TileEntityCombustionGenerator tile)
     {
         super(playerInventory, tile, 2);
+        
+        this.tileEntity = tile;
+        
+        this.inventory = (IInventory) tile;
 
-        this.addSlotToContainer(new SlotFurnaceFuel(this.inventory, FUEL, 56, 35));
-        this.addSlotToContainer(new SlotOutput(playerInventory.player, this.inventory, OUTPUT, 116, 35));
+        this.addSlotToContainer(new SlotFurnaceFuel(this.inventory, FUEL, 48, 35));
+        this.addSlotToContainer(new SlotOutput(playerInventory.player, this.inventory, OUTPUT, 108, 35));
 
         addPlayerSlots(playerInventory);
     }
@@ -88,5 +95,11 @@ public class ContainerCombustionGenerator extends MechaTechContainers.TileEntity
     	}
 
     	return itemstack;
+    }
+    
+    @Override
+    public boolean canInteractWith(EntityPlayer player)
+    {
+    	return tileEntity.isUseableByPlayer(player);
     }
 }

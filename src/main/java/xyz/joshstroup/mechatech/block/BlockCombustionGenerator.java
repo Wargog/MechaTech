@@ -6,19 +6,19 @@ import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-
 import xyz.joshstroup.mechatech.MechaTech;
 import xyz.joshstroup.mechatech.MechaTechCreativeTab;
 import xyz.joshstroup.mechatech.tileentity.TileEntityCombustionGenerator;
@@ -40,17 +40,11 @@ public class BlockCombustionGenerator extends Block implements ITileEntityProvid
     @ParametersAreNonnullByDefault
     public IBlockState getStateForPlacement(World world, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer, ItemStack itemStack)
     {
-        if(placer.isSneaking())
-        {
-            return this.getDefaultState().withProperty(FACING, placer.getHorizontalFacing());
-        }
-        else
-        {
-            return this.getDefaultState().withProperty(FACING, placer.getHorizontalFacing().getOpposite());
-        }
+        return this.getDefaultState().withProperty(FACING, placer.getHorizontalFacing().getOpposite());
     }
 
     @Override
+    @MethodsReturnNonnullByDefault
     public IBlockState getStateFromMeta(int meta)
     {
         return this.getDefaultState().withProperty(FACING, EnumFacing.getHorizontal(meta));
@@ -59,7 +53,7 @@ public class BlockCombustionGenerator extends Block implements ITileEntityProvid
     @Override
     public int getMetaFromState(IBlockState state)
     {
-        return state.getValue(FACING).getIndex();
+        return state.getValue(FACING).getHorizontalIndex();
     }
 
     @Override
@@ -67,12 +61,6 @@ public class BlockCombustionGenerator extends Block implements ITileEntityProvid
     protected BlockStateContainer createBlockState()
     {
         return new BlockStateContainer(this, FACING);
-    }
-
-    @Override
-    public void onBlockPlacedBy(World worldIn, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack)
-    {
-
     }
 
     @Override
@@ -86,6 +74,16 @@ public class BlockCombustionGenerator extends Block implements ITileEntityProvid
         }
 
         return true;
+    }
+    
+    @Override
+    @ParametersAreNonnullByDefault
+    public void breakBlock(World worldIn, BlockPos pos, IBlockState state)
+    {
+    	if (!worldIn.isRemote)
+        {
+    	    InventoryHelper.dropInventoryItems(worldIn, pos, (IInventory) worldIn.getTileEntity(pos));
+        }
     }
 
     @Override
