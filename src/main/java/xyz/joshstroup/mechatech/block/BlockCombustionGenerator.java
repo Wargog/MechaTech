@@ -79,6 +79,7 @@ public class BlockCombustionGenerator extends Block implements ITileEntityProvid
     @Override
     public void breakBlock(World worldIn, BlockPos pos, IBlockState state)
     {
+    	if (!worldIn.isRemote)
     	InventoryHelper.dropInventoryItems(worldIn, pos, (IInventory) worldIn.getTileEntity(pos));
     }
 
