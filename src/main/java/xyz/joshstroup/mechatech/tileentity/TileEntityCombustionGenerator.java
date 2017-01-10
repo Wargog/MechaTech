@@ -4,11 +4,12 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import mcp.MethodsReturnNonnullByDefault;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.inventory.SlotFurnaceFuel;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -17,8 +18,14 @@ import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.ITickable;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraft.world.World;
+
+import xyz.joshstroup.mechatech.block.BlockCombustionGenerator;
+import xyz.joshstroup.mechatech.item.MechaTechItems;
 import xyz.joshstroup.mechatech.render.gui.container.ContainerCombustionGenerator;
 
 public class TileEntityCombustionGenerator extends TileEntity implements IInventory, ITickable
@@ -79,6 +86,13 @@ public class TileEntityCombustionGenerator extends TileEntity implements IInvent
     }
 
     @Override
+    @ParametersAreNonnullByDefault
+    public boolean shouldRefresh(World world, BlockPos pos, IBlockState oldState, IBlockState newState)
+    {
+        return oldState.getBlock() != newState.getBlock();
+    }
+
+    @Override
     @Nullable
     public SPacketUpdateTileEntity getUpdatePacket()
     {
@@ -106,9 +120,10 @@ public class TileEntityCombustionGenerator extends TileEntity implements IInvent
         return nbtTagCompound;
     }
 
-    /* Populates this TileEntity with information from the tag, used by vanilla to transmit from server to client
-     Warning - although our onDataPacket() uses this method, vanilla also calls it directly, so don't remove it.
-   */
+    /**
+     * Populates this TileEntity with information from the tag, used by vanilla to transmit from server to client
+     * Warning - although our onDataPacket() uses this method, vanilla also calls it directly, so don't remove it.
+     */
     @Override
     public void handleUpdateTag(NBTTagCompound tag)
     {
@@ -129,7 +144,49 @@ public class TileEntityCombustionGenerator extends TileEntity implements IInvent
     {
         if(this.isBurning())
         {
-            --this.burnTimeRemaining;
+            this.burnTimeRemaining--;
+
+            // TODO: Implement a better solution for block lighting
+            if(this.getWorld().getLightBrightness(this.getPos()) != 1.0F)
+            {
+                this.getWorld().getBlockState(this.getPos()).getBlock().setLightLevel(1.0F);
+            }
+
+            if(!this.getWorld().getBlockState(this.getPos()).getValue(BlockCombustionGenerator.POWERED) && this.getWorld().getBlockState(this.getPos()).getBlock() instanceof BlockCombustionGenerator)
+            {
+                this.getWorld().setBlockState(this.getPos(), this.getWorld().getBlockState(this.getPos()).withProperty(BlockCombustionGenerator.POWERED, true));
+            }
+        }
+
+
+        // Remove fuel and convert it to ash unless the output slot is full
+        if(!this.isBurning() && this.getStackInSlot(ContainerCombustionGenerator.FUEL) != null)
+        {
+            if(this.getStackInSlot(ContainerCombustionGenerator.OUTPUT) != null && this.getStackInSlot(ContainerCombustionGenerator.OUTPUT).stackSize == this.getInventoryStackLimit())
+            {
+                return;
+            }
+
+            this.decrStackSize(ContainerCombustionGenerator.FUEL, 1);
+            this.incrStackSize(ContainerCombustionGenerator.OUTPUT, 1, MechaTechItems.itemAsh);
+            // Reset burn time to new Item since we have converted the old one to ash
+            this.burnTimeRemaining = TileEntityFurnace.getItemBurnTime(this.getStackInSlot(ContainerCombustionGenerator.FUEL));
+
+            return;
+        }
+
+        if(!this.isBurning())
+        {
+            // Turn off light source if the block is no longer burning
+            if(this.getWorld().getLightBrightness(this.getPos()) != 0.0F)
+            {
+                this.getWorld().getBlockState(this.getPos()).getBlock().setLightLevel(0.0F);
+            }
+
+            if(this.getWorld().getBlockState(this.getPos()).getValue(BlockCombustionGenerator.POWERED) && this.getWorld().getBlockState(this.getPos()).getBlock() instanceof BlockCombustionGenerator)
+            {
+                this.getWorld().setBlockState(this.getPos(), this.getWorld().getBlockState(this.getPos()).withProperty(BlockCombustionGenerator.POWERED, false));
+            }
         }
     }
 
@@ -197,38 +254,42 @@ public class TileEntityCombustionGenerator extends TileEntity implements IInvent
     }
 
     @Override
-    public ItemStack getStackInSlot(int index) {
-        if (index < 0 || index >= this.getSizeInventory())
+    public ItemStack getStackInSlot(int slot)
+    {
+        if(slot < 0 || slot >= this.getSizeInventory())
+        {
             return null;
+        }
 
-        return this.generatorItemStacks[index];
+        return this.generatorItemStacks[slot];
     }
 
     @Override
-    public ItemStack decrStackSize(int index, int count) {
-        if(this.getStackInSlot(index) != null)
+    public ItemStack decrStackSize(int slot, int count)
+    {
+        if(this.getStackInSlot(slot) != null)
         {
             ItemStack itemstack;
 
-            if(this.getStackInSlot(index).stackSize <= count)
+            if(this.getStackInSlot(slot).stackSize <= count)
             {
-                itemstack = this.getStackInSlot(index);
-                this.setInventorySlotContents(index, null);
+                itemstack = this.getStackInSlot(slot);
+                this.setInventorySlotContents(slot, null);
                 this.markDirty();
                 return itemstack;
             }
             else
             {
-                itemstack = this.getStackInSlot(index).splitStack(count);
+                itemstack = this.getStackInSlot(slot).splitStack(count);
 
-                if(this.getStackInSlot(index).stackSize <= 0)
+                if(this.getStackInSlot(slot).stackSize <= 0)
                 {
-                    this.setInventorySlotContents(index, null);
+                    this.setInventorySlotContents(slot, null);
                 }
                 else
                 {
                     //Just to show that changes happened
-                    this.setInventorySlotContents(index, this.getStackInSlot(index));
+                    this.setInventorySlotContents(slot, this.getStackInSlot(slot));
                 }
 
                 this.markDirty();
@@ -241,16 +302,42 @@ public class TileEntityCombustionGenerator extends TileEntity implements IInvent
         }
     }
 
+    public ItemStack incrStackSize(int slot, int count, Item intendedItem)
+    {
+        if(this.getStackInSlot(slot) == null)
+        {
+            ItemStack itemstack = new ItemStack(intendedItem);
+            itemstack.stackSize = MathHelper.clamp_int(count, 1, this.getInventoryStackLimit());
+
+            this.setInventorySlotContents(slot, itemstack);
+            this.markDirty();
+
+            return itemstack;
+        }
+        else
+        {
+            ItemStack itemstack = this.getStackInSlot(slot);
+            itemstack.stackSize += MathHelper.clamp_int(count, 1, this.getInventoryStackLimit());
+
+            this.setInventorySlotContents(slot, itemstack);
+            this.markDirty();
+
+            return itemstack;
+        }
+    }
+
     @Override
-    public ItemStack removeStackFromSlot(int index) {
-        ItemStack stack = this.getStackInSlot(index);
-        this.setInventorySlotContents(index, null);
+    public ItemStack removeStackFromSlot(int slot)
+    {
+        ItemStack stack = this.getStackInSlot(slot);
+        this.setInventorySlotContents(slot, null);
         return stack;
     }
 
     @Override
-    public void setInventorySlotContents(int index, ItemStack stack) {
-        if(index < 0 || index >= this.getSizeInventory())
+    public void setInventorySlotContents(int slot, ItemStack stack)
+    {
+        if(slot < 0 || slot >= this.getSizeInventory())
         {
             return;
         }
@@ -265,7 +352,7 @@ public class TileEntityCombustionGenerator extends TileEntity implements IInvent
             stack = null;
         }
 
-        this.generatorItemStacks[index] = stack;
+        this.generatorItemStacks[slot] = stack;
         this.markDirty();
     }
     
@@ -278,17 +365,23 @@ public class TileEntityCombustionGenerator extends TileEntity implements IInvent
 
     @Override
     @ParametersAreNonnullByDefault
-    public void openInventory(EntityPlayer player) {}
+    public void openInventory(EntityPlayer player)
+    {
+
+    }
 
     @Override
     @ParametersAreNonnullByDefault
-    public void closeInventory(EntityPlayer player) {}
+    public void closeInventory(EntityPlayer player)
+    {
+
+    }
 
     @Override
     @ParametersAreNonnullByDefault
     public boolean isItemValidForSlot(int slot, ItemStack stack)
     {
-    	if (slot == 1)
+    	if (slot == ContainerCombustionGenerator.OUTPUT)
         {
             return false;
         }
@@ -299,7 +392,7 @@ public class TileEntityCombustionGenerator extends TileEntity implements IInvent
         else
         {
             ItemStack itemstack = this.generatorItemStacks[0];
-            return TileEntityFurnace.isItemFuel(stack) || SlotFurnaceFuel.isBucket(stack) && (itemstack == null || itemstack.getItem() != Items.BUCKET);
+            return TileEntityFurnace.isItemFuel(stack) || !SlotFurnaceFuel.isBucket(stack) && (itemstack == null || itemstack.getItem() != Items.BUCKET);
         }
     }
 }

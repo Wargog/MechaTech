@@ -7,6 +7,7 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.inventory.SlotFurnaceFuel;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntityFurnace;
+
 import xyz.joshstroup.mechatech.tileentity.TileEntityCombustionGenerator;
 import xyz.joshstroup.mechatech.util.inventory.SlotOutput;
 

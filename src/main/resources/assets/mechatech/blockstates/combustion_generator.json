@@ -19,14 +19,14 @@
       "east": {"y": 90},
       "up": {"x": -90},
       "down": {"x": 90}
-    }
-  },
-  "powered": {
-    "true": {
-      "textures": { "front": "blocks/furnace_front_on" }
     },
-    "false": {
-      "textures": { "front": "blocks/furnace_front_off" }
+    "powered": {
+      "true": {
+        "textures": { "front": "blocks/furnace_front_on" }
+      },
+      "false": {
+        "textures": { "front": "blocks/furnace_front_off" }
+      }
     }
   }
 }
